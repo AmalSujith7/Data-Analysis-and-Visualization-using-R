@@ -1,0 +1,145 @@
+---
+title: "Ex1-Basic Data Types in R"
+author: "Zeel Desai"
+date: "07/08/2021"
+output: html_document
+---
+
+## Name: Desai Zeel Amitkumar
+## Registration No: 19BCE1229
+
+
+### 1.Assign a numeric value to a variable ‘a’ and convert ‘a’ into an integer
+```{r}
+a <- 1.5
+as.integer(a)
+```
+
+
+### 2.	Make this quote into an R string– “Do you think this is a game?”, he said. “No, I think Jenga’s a game”, Archer responded.
+
+```{r}
+str <- "\"Do you think this is a game?\", he said. \"No, I think Jenga’s a game\", Archer responded."
+str
+```
+
+
+### 3.Create two numeric vectors p & q
+
+```{r}
+p <- c(1,2,3,4,5)
+q <- c(5,6,7,8,9)
+print(p)
+print(q)
+```
+
+### 4.Use R as a calculator to do basic arithmetic operations on p &q and store each result in different variables
+
+```{r}
+add <- p+q
+sub <- p-q
+div <- p/q
+mul <- p*q
+add
+sub
+div
+mul
+
+```
+
+
+### 5.Calculate sqrt(a) and perform log2 transformation on the result.
+
+```{r}
+b <- sqrt(a)
+log2(b)
+```
+
+### 6.Calculate the 10-based logarithm of 100 and multiply the result with cosine of π
+
+```{r}
+result <- log10(100)
+result
+answer <- result*cos(pi)
+answer
+```
+
+### 7.	Create a vector ‘x’ using : operator from -2 to 2.
+
+```{r}
+x <- -2:2
+x
+```
+
+### 8.	Print the dimension and length of x.
+
+```{r}
+x <- -2:2
+x
+length(x)
+dim(x)
+```
+
+### 9.	Create two vectors small and caps with last 5 alphabets in lower case and first 5 alphabets in upper case respectively. Bind it row and columnwise.
+
+```{r}
+y <- c("a","b","c","d","e","A","B","C","D","E")
+x <- c("f","g","h","i","j","F","G","H","I","J")
+cbind(y,x)
+rbind(y,x)
+```
+
+### 10.	Create a matrix M=[[1 2 5 ][−4 8 6 ][3 −1 7]] and find MxMxM.
+
+```{r}
+a <- c(1,2,5)
+b <- c(-4,8,6)
+c <- c(3,-1,7)
+M <- rbind(a,b,c)
+M%*%M%*%M
+```
+
+### 11.	Find the result of elementwise multiplication of M by M.
+
+```{r}
+M*M
+```
+
+### 12.	Find the transpose, inverse and determinant of M.
+
+```{r}
+t <- t(M)
+t
+I <- solve(M)
+I
+det(M)
+```
+
+
+
+
+
+
+## R Markdown
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

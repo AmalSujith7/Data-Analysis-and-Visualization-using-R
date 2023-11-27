@@ -1,0 +1,237 @@
+---
+title: "Data Cleaning in R"
+author: "Zeel Desai"
+date: "26/08/2021"
+output: html_document
+---
+
+## Name: Desai Zeel Amitkumar
+## Registration No: 19BCE1229
+
+### Lab4: Choose any data set of your choice and do the data cleaning and preparation.
+
+## Reading data, View the data and its dimension and structure
+```{r}
+#clearing workspace
+rm(list=ls())
+#reading using read.csv
+hotel <- read.csv("hotel_book.csv")
+#dimention of data
+dim(hotel)
+```
+
+```{r}
+#structure of the data
+str(hotel)
+```
+
+
+```{r}
+#view of the data
+View(hotel)
+
+#fetching top 6 rows
+head(hotel)
+```
+
+
+
+
+```{r}
+#fetching last 6 rows
+tail(hotel)
+```
+
+```{r}
+#summary of the data
+summary(hotel)
+
+```
+
+
+
+
+## Cleaning data (omitting na and storing in data set hotel_clean)
+
+```{r}
+#checking for missing values in the data
+any(is.na(hotel))
+```
+
+
+```{r}
+#checking for the total no. of missing values in the data
+sum(is.na(hotel))
+```
+
+
+
+```{r}
+#cleaning NA values
+hotel_clean <- na.omit(hotel)
+
+sum(is.na(hotel_clean))
+```
+
+
+```{r}
+str(hotel_clean)
+```
+
+
+
+```{r}
+hotel_clean <- hotel[complete.cases(hotel),]
+```
+
+## Cleaning the column “children”
+
+```{r}
+#imputation - filling the missing values
+#checking for the total no. of missing values in a particular column
+sum(is.na(hotel$children))
+```
+
+
+
+```{r}
+unique(hotel$children)
+```
+
+
+```{r}
+mean(hotel$children,na.rm=TRUE)
+```
+
+
+
+```{r}
+library(tidyverse)
+```
+
+
+
+```{r}
+#check impute with mean or median and fill in the missing values
+hotel%>%
+  summarize(avg=mean(children,na.rm=TRUE),med=median(children,na.rm=TRUE))
+```
+
+
+```{r}
+hotel <- hotel%>%
+  mutate(children=replace(children,is.na(children),median(children,na.rm=TRUE)))
+
+sum(is.na(hotel$children))
+```
+
+
+```{r}
+#Rename the column "children" to "kids"
+hotel <- hotel%>%
+  rename(kids=children)
+names(hotel)
+```
+
+## Cleaning the column “adr”
+
+```{r}
+sum(is.na(hotel$adr))
+```
+
+
+```{r}
+#cleaning unwanted substring "%" from column
+hotel <- hotel%>%
+  mutate(adr=gsub("%","",adr))
+head(hotel$adr,3)
+```
+
+```{r}
+#check impute with mean or median and fill in the missing values
+hotel%>%
+  summarize(avg=mean(adr,na.rm=TRUE),med=median(adr,na.rm=TRUE))
+```
+
+
+```{r}
+hotel <- hotel%>%
+  mutate(adr=replace(adr,is.na(adr),median(adr,na.rm=TRUE)))
+
+sum(is.na(hotel$adr))
+```
+
+```{r}
+str(hotel)
+```
+
+
+## Cleaning the column “days_in_waiting_list”
+
+
+```{r}
+sum(is.na(hotel$days_in_waiting_list))
+```
+
+
+```{r}
+unique(hotel$days_in_waiting_list)
+```
+
+```{r}
+#cleaning unwanted substring "days" from the column
+hotel <- hotel%>%
+  mutate(days_in_waiting_list=gsub("days","",days_in_waiting_list))
+
+hotel$days_in_waiting_list <- as.integer(hotel$days_in_waiting_list)
+```
+
+```{r}
+sum(is.na(hotel$days_in_waiting_list))
+```
+
+```{r}
+unique(hotel$days_in_waiting_list)
+```
+
+```{r}
+#check impute with mean or median to fill in the missing values
+hotel%>%
+  summarize(avg=mean(days_in_waiting_list,na.rm=TRUE),med=median(days_in_waiting_list,na.rm=TRUE))
+
+```
+
+```{r}
+hotel <- hotel%>%
+  mutate(days_in_waiting_list=replace(days_in_waiting_list,is.na(days_in_waiting_list),median(days_in_waiting_list,na.rm=TRUE)))
+
+sum(is.na(hotel$days_in_waiting_list))
+```
+
+
+```{r}
+str(hotel)
+```
+## R Markdown
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

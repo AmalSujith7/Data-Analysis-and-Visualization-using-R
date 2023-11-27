@@ -1,0 +1,131 @@
+---
+title: "Data Manipulation in R"
+author: "Zeel Desai"
+date: "19/08/2021"
+output: html_document
+---
+
+## Name: Desai Zeel Amitkumar
+## Registration No: 19BCE1229
+
+## Lab3
+## Obtain a data frame called “newsurvey” by removing all ‘na’ values in “survey” data of MASS package to do the following:
+```{r}
+library(MASS)
+data("survey")
+newsurvey_unclean <- survey
+newsurvey <- na.omit(newsurvey_unclean)
+dim(newsurvey)
+head(newsurvey)
+```
+
+
+
+### 1.Install the dplyr package and import it.
+```{r}
+library(dplyr)
+```
+
+
+### 2.Filter the bottom 5 male left handers.	
+
+```{r}
+newsurvey %>%
+  filter(W.Hnd =="Left",Sex =="Male" ) %>%
+  tail(5)
+```
+
+
+### 3.Display all male right handers who keep left on top while clapping.
+
+```{r}
+newsurvey %>%
+  filter(W.Hnd =="Right",Sex =="Male", Clap=="Right")
+```
+
+### 4.Display random 3 students under each category of exercise.
+
+```{r}
+newsurvey %>% 
+  group_by(Exer) 
+  slice_sample(newsurvey, n=3)
+```
+
+
+### 5.Display random 6 rows of gender, age and writing hand columns of the students.
+
+```{r}
+newsurvey %>%
+  dplyr::select(Sex,Age,W.Hnd)%>%
+  sample_n(6)
+```
+
+### 6.Display random 50% of the rows of age, pulse rate and writing hand span of male right handers.
+
+```{r}
+newsurvey %>%
+  filter(W.Hnd =="Right",Sex =="Male")%>%
+  dplyr::select(Age,Pulse,Wr.Hnd)%>%
+  sample_frac(0.5)
+```
+
+### 7.Arrange all female right handers according to descending order of their heights.
+
+```{r}
+newsurvey %>%
+  filter(W.Hnd =="Right",Sex =="Female")%>%
+  arrange(desc(Height))
+```
+
+### 8.Introduce a new column hand_span which contains the value as sum of span of writing hand and non-writing hand and display it along with gender, writing hand and non-writing hand span.
+
+```{r}
+newsurvey %>%
+  mutate(hand_span=Wr.Hnd+NW.Hnd)%>%
+  dplyr::select(Sex,W.Hnd,Wr.Hnd,NW.Hnd,hand_span)%>%
+  head()
+```
+
+### 9.Display the median writing span of male and female left handers.
+
+```{r}
+newsurvey %>%
+  group_by(Sex) %>%
+  summarize(mn1=median(Wr.Hnd))
+```
+
+### 10	Find the minimum pulse rate of male left and right handers.
+
+```{r}
+newsurvey %>%
+  filter(Sex =="Male")%>%
+  group_by(W.Hnd) %>%
+  summarize(min_pulse=min(Wr.Hnd))
+```
+
+
+
+
+## R Markdown
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

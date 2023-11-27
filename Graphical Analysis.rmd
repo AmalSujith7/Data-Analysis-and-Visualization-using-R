@@ -1,0 +1,271 @@
+---
+title: "ex9"
+author: "Amal Sujith"
+date: "21/10/2021"
+output: html_document
+---
+
+## Name: Amal Sujith
+
+```{r}
+cancer <- read.csv("C:/Users/desai/OneDrive/Desktop/dfa/lab/lab9/diabetes.csv")
+
+
+#dimension of the data
+dim(cancer)
+
+#structure of the data
+str(cancer)
+
+
+#view of the data in a table
+View(cancer)
+
+
+#fetching top 6 rows
+head(cancer)
+
+#fetching last 6 rows
+tail(cancer)
+
+#summary of the data
+summary(cancer)
+
+############       Cleaning data   #################
+#checking for missing values in the data
+any(is.na(cancer))  #NA NaN
+
+
+#checking for the total no. of missing values in the data
+sum(is.na(cancer))
+
+```
+
+
+```{r}
+
+cancer_unclean <- cancer
+newcancer <- na.omit(cancer_unclean)
+```
+
+```{r}
+any(is.na(cancer)) 
+```
+
+```{r}
+sum(is.na(cancer))
+```
+
+
+
+```{r}
+library(MASS)
+
+```
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+library(tidyverse)
+```
+
+##Display random 3 values under each category of pregnancies.
+
+```{r}
+newcancer %>% 
+  group_by(Pregnancies) 
+  slice_sample(newcancer, n=3)
+```
+
+##### Arrange all patients whose glucose=109 and Insulin =0 ccording to descending order of their age.
+
+```{r}
+newcancer %>%
+  filter(Glucose =="109",Insulin =="0")%>%
+  arrange(desc(Age))
+```
+
+### 	Find the minimum SkinThickness of diabetic and non diabetic patients.
+
+
+```{r}
+newcancer %>%
+ 
+  group_by(Outcome) %>%
+  summarize(SkinThickness=min(Outcome))
+```
+
+
+#Infernce
+##0=diabetic 1-non-diabetic
+
+
+
+#Show the frequency distribution graphically by bar chart
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+c_factor <- factor(newcancer$Outcome,levels = c("0","1"),labels = c("Non-diabetic","Diabetic"))
+ggplot(newcancer,aes(x=c_factor))+geom_bar()+labs(title = "Frequency distribution graphically",x='Cancer class',y='Frequency')
+```
+
+#### 5.Draw the histogram of age distribution with the title as ‘Age distribution’ and xlabel as ‘Age range’ and ylabel as ‘frequency’..
+
+```{r}
+hist(newcancer$Age ,main = "Age Distribution", xlab= "Age Range", ylab ="frequency")
+```
+
+### 6. Reveal the relationship between the age and Outcome using scatter plot.
+
+```{r}
+plot(newcancer$Age,newcancer$Outcome)
+```
+
+```{r}
+ggplot(newcancer,aes(x=Age,y=Pregnancies))+geom_boxplot(aes(fill=Outcome))+facet_wrap(Outcome~.)
+```
+
+
+
+
+
+
+
+
+#What is the frequency and relative frequency distribution of diabatic and non-diabetic categories?
+
+```{r}
+cat_class <- table(newcancer$Outcome)
+cat_class
+```
+
+```{r}
+rel_freq=cat_class/sample_size
+rel_freq
+```
+
+#Find the range of patients Age participated in the survey.
+
+```{r}
+Age=newcancer$Age
+Age_range = range(Age) 
+Age_range
+```
+
+#We find the correlations
+
+
+
+```{r}
+par(mar=c(2,2,2,2))
+ggplot(newcancer,aes(x=Glucose,y=BMI))+geom_point()+geom_smooth(method='lm',se=FALSE)
+```
+
+```{r}
+cor(newcancer$Glucose,newcancer$BMI)
+```
+
+```{r}
+par(mar=c(2,2,2,2))
+ggplot(newcancer,aes(x=Insulin,y=BMI))+geom_point()+geom_smooth(method='lm',se=FALSE)
+```
+
+
+
+
+```{r}
+cor(newcancer$Insulin,newcancer$BMI)
+```
+
+```{r}
+par(mar=c(2,2,2,2))
+ggplot(newcancer,aes(x=BloodPressure,y=BMI))+geom_point()+geom_smooth(method='lm',se=FALSE)
+```
+
+```{r}
+cor(newcancer$BloodPressure,newcancer$BMI)
+```
+
+
+
+
+```{r}
+library(caret)
+```
+```{r}
+train_samples <- newcancer$BMI %>%
+  createDataPartition(p=0.8,list=FALSE)
+head(train_samples)
+```
+
+
+```{r}
+model <- lm(BMI~Glucose,data=newcancer)
+#model <- lm(sales~.,data=marketing)
+model
+```
+
+```{r}
+model <- lm(BMI~Insulin,data=newcancer)
+#model <- lm(sales~.,data=marketing)
+model
+```
+
+
+```{r}
+model <- lm(BMI~BloodPressure,data=newcancer)
+#model <- lm(sales~.,data=marketing)
+model
+```
+```{r}
+#split the data into training and test data set
+library(dplyr)
+
+```
+
+```{r}
+train_samples <- newcancer$BMI %>%
+  createDataPartition(p=0.8,list=FALSE)
+head(train_samples)
+```
+
+
+```{r}
+train <- newcancer[train_samples,]
+test <- newcancer[-train_samples,]
+model <- lm(BMI~.,data=newcancer)
+summary(model)
+```
+
+
+```{r}
+pred <- model %>%
+  predict(train)
+head(pred)
+```
+##Model performance
+
+```{r}
+RMSE <- RMSE(pred,df$BMI)
+RMSE
+```
+
+```{r}
+R2 <- R2(pred,df$BMI)
+R2
+```
+
+#RSE ERROR
+
+```{r}
+sigma(model)   #RSE/mean(marketing$sales)
+```
+
+```{r}
+sigma(model)*100/mean(newcancer$BMI)  #percentage error
+```
